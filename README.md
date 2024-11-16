@@ -1,8 +1,10 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
+First, install the dependencies:
+npm i --legacy-peer-deps
 
-First, run the development server:
+Secondly, run the development server:
 
 ```bash
 npm run dev
