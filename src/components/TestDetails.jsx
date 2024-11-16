@@ -46,10 +46,6 @@ export default function TestDetails({ setRank, setPercentile, setScore }) {
     return !Object.values(newErrors).some((error) => error !== "");
   };
 
-  useEffect(() => {
-    validateFields();
-  }, [cred]);
-
   const handleSubmit = () => {
     if (validateFields()) {
       setCred({ rank: "", percentile: "", score: "" });
@@ -57,7 +53,7 @@ export default function TestDetails({ setRank, setPercentile, setScore }) {
     }
   };
 
-  const hasErrors = Object.values(errors).some((error) => error !== "");
+  const hasEmptyFields = !cred.rank || !cred.percentile || !cred.score;
 
   return (
     <div className="md:col-span-2">
@@ -116,10 +112,25 @@ export default function TestDetails({ setRank, setPercentile, setScore }) {
                           onChange={(e) => {
                             setRank(e.target.value);
                             setCred({ ...cred, rank: e.target.value });
-                            setErrors({ ...errors, rank: "" });
+                            if (!e.target.value) {
+                              setErrors({
+                                ...errors,
+                                rank: "Required | Should be a number",
+                              });
+                            } else {
+                              setErrors({ ...errors, rank: "" });
+                            }
                           }}
                           className="border-[1px] w-full border-blue-600 rounded p-1 sm:p-2 no-spinner"
                           placeholder="Rank"
+                          onBlur={() => {
+                            if (!cred.rank) {
+                              setErrors({
+                                ...errors,
+                                rank: "Required | Should be a number",
+                              });
+                            }
+                          }}
                         />
 
                         {errors.rank && (
@@ -154,12 +165,27 @@ export default function TestDetails({ setRank, setPercentile, setScore }) {
                             );
                             setPercentile(value);
                             setCred({ ...cred, percentile: value });
-                            setErrors({ ...errors, percentile: "" });
+                            if (!value) {
+                              setErrors({
+                                ...errors,
+                                percentile: "Required | 0 - 100",
+                              });
+                            } else {
+                              setErrors({ ...errors, percentile: "" });
+                            }
                           }}
                           className="border-[1px] w-full border-blue-600 rounded p-1 sm:p-2 no-spinner"
                           placeholder="Percentile"
                           min="0"
                           max="100"
+                          onBlur={() => {
+                            if (!cred.percentile) {
+                              setErrors({
+                                ...errors,
+                                percentile: "Required | 0 - 100",
+                              });
+                            }
+                          }}
                         />
 
                         {errors.percentile && (
@@ -197,12 +223,27 @@ export default function TestDetails({ setRank, setPercentile, setScore }) {
                             );
                             setScore(value);
                             setCred({ ...cred, score: value });
-                            setErrors({ ...errors, score: "" });
+                            if (!value) {
+                              setErrors({
+                                ...errors,
+                                score: "Required | 0 - 15",
+                              });
+                            } else {
+                              setErrors({ ...errors, score: "" });
+                            }
                           }}
                           className="border-[1px] w-full border-blue-600 rounded p-1 sm:p-2 no-spinner"
                           placeholder="Score"
                           min="0"
                           max="15"
+                          onBlur={() => {
+                            if (!cred.score) {
+                              setErrors({
+                                ...errors,
+                                score: "Required | 0 - 15",
+                              });
+                            }
+                          }}
                         />
 
                         {errors.score && (
@@ -220,13 +261,13 @@ export default function TestDetails({ setRank, setPercentile, setScore }) {
                     Cancel
                   </AlertDialogCancel>
                   <AlertDialogAction
-                    className={`rounded-lg px-3 text-white  ${
-                      hasErrors
+                    className={`rounded-lg px-3 text-white ${
+                      hasEmptyFields
                         ? "bg-black cursor-not-allowed"
                         : "bg-blue-900 cursor-pointer"
                     }`}
                     type="button"
-                    disabled={hasErrors}
+                    disabled={hasEmptyFields}
                     onClick={handleSubmit}
                   >
                     Save &#8594;
